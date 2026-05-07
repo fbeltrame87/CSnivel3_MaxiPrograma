@@ -1,0 +1,16 @@
+p{
+    color: darkslateblue;
+    font-weight: bold;
+}
+#parrafo3{
+    color: indigo;
+}
+.colorPrincipal{
+    color: bisque;
+
+}
+#cuadrado{
+    width: 200px;
+    height: 200px;
+    background-color: yellowgreen;
+}
