@@ -31,8 +31,8 @@ namespace Gestor_eCommerce_WebApp
             }
             else
             {
-                lblSaludo.Text = "Debes completar ambos campos.";
-                lblSaludo.ForeColor = System.Drawing.Color.Red;
+                lblSignUp.Text = "Debes completar ambos campos.";
+                lblSignUp.ForeColor = System.Drawing.Color.Red;
             }
         }
     }

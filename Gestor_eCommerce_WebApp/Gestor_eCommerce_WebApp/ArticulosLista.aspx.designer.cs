@@ -10,15 +10,15 @@
 namespace Gestor_eCommerce_WebApp {
     
     
-    public partial class Default {
+    public partial class ArticulosLista {
         
         /// <summary>
-        /// Control repetidor.
+        /// Control dgvCommerce.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater repetidor;
+        protected global::System.Web.UI.WebControls.GridView dgvCommerce;
     }
 }

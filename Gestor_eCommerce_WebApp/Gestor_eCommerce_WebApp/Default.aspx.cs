@@ -4,7 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Dominio;
+using CapaDominio;
+using CapaNegocio;
 
 namespace Gestor_eCommerce_WebApp
 {
@@ -12,9 +13,12 @@ namespace Gestor_eCommerce_WebApp
     {
         public string user { get; set; }
         public string password { get; set; }
+        public List<Articulo> ListaArticulo { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            ArticuloNegocio negocio = new ArticuloNegocio();
+
             if (Session["user"] != null)
             {
                 //Recuperamos los datos de Session
@@ -28,22 +32,23 @@ namespace Gestor_eCommerce_WebApp
                 return;
             }
 
-            if(Session["listaArticulos"] == null)
-            {
-                ArticuloNegocio negocio = new ArticuloNegocio();
-                Session.Add("listaArticulos", negocio.listar()); //Guardo en Session la lista de articulos para que permanezca en MEMORIA
-            }
             if (!IsPostBack)
             {
-                dgvCommerce.DataSource = Session["listaArticulos"];
-                dgvCommerce.DataBind();
+                //Si guardamos en Session:
+                //dgvCommerce.DataSource = Session["listaArticulos"];
+                //dgvCommerce.DataBind();
+
+                // Llamamos directo al método que hace el SELECT en tu DB con Stored Procedure
+                ListaArticulo = negocio.listarConSP();
+
+                repetidor.DataSource = ListaArticulo;
+                repetidor.DataBind();
             }
         }
 
-        protected void dgvCommerce_SelectedIndexChanged(object sender, EventArgs e)
+        protected void btnEjemplo_Click(object sender, EventArgs e)
         {
-            var id = dgvCommerce.SelectedDataKey.Value.ToString();
-            Response.Redirect("ArticuloForm.aspx?id=" + id);
+            string valor = ((Button)sender).CommandArgument; //Sender es el objeto que lanzó el evento.
         }
     }
 }

@@ -68,7 +68,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ArticuloForm.aspx" />
+    <Content Include="ArticulosLista.aspx" />
     <Content Include="Default.aspx" />
+    <Content Include="DetalleArticulo.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Login.aspx" />
     <Content Include="Web.config" />
@@ -81,12 +83,26 @@
     <Compile Include="ArticuloForm.aspx.designer.cs">
       <DependentUpon>ArticuloForm.aspx</DependentUpon>
     </Compile>
+    <Compile Include="ArticulosLista.aspx.cs">
+      <DependentUpon>ArticulosLista.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ArticulosLista.aspx.designer.cs">
+      <DependentUpon>ArticulosLista.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DetalleArticulo.aspx.designer.cs">
+      <DependentUpon>DetalleArticulo.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -122,6 +138,14 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CapaDominio\CapaDominio.csproj">
+      <Project>{d03be491-e8af-47fe-aae2-b33326b62a07}</Project>
+      <Name>CapaDominio</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CapaNegocio\CapaNegocio.csproj">
+      <Project>{2ce904a9-6d9a-4636-a82b-31a8475b8a1d}</Project>
+      <Name>CapaNegocio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClassLibrary1\Dominio.csproj">
       <Project>{8f8b7094-2964-42b9-ac2f-85b2f3447519}</Project>
       <Name>Dominio</Name>

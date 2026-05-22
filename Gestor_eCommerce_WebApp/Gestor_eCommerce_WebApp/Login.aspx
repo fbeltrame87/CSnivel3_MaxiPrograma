@@ -12,7 +12,8 @@
             <div>
                 <label for="txtBoxPassword" class="form-label">Contraseña</label>
                 <asp:TextBox ID="txtBoxPassword" Type="password" CssClass="form-control" runat="server"></asp:TextBox>
-                <asp:Label ID="lblSaludo" runat="server" Text=""></asp:Label>
+                <asp:Label ID="lblSignUp" runat="server" Text="">¿No tienes usuario?</asp:Label>
+                <a href="SignUp.aspx">Registrate</a>
             </div>
             <asp:Button Text="Ingresar" CssClass="btn btn-primary" ID="BtnIngresar" OnClick="BtnIngresar_Click" runat="server" />
         </div>

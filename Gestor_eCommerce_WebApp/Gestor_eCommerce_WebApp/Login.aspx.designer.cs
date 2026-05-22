@@ -31,13 +31,13 @@ namespace Gestor_eCommerce_WebApp {
         protected global::System.Web.UI.WebControls.TextBox txtBoxPassword;
         
         /// <summary>
-        /// Control lblSaludo.
+        /// Control lblSignUp.
         /// </summary>
         /// <remarks>
         /// Campo generado automáticamente.
         /// Para modificarlo, mueva la declaración del campo del archivo del diseñador al archivo de código subyacente.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblSaludo;
+        protected global::System.Web.UI.WebControls.Label lblSignUp;
         
         /// <summary>
         /// Control BtnIngresar.
