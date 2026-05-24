@@ -16,6 +16,8 @@ namespace Gestor_eCommerce_WebApp
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            txtBoxId.Enabled = false;
+
             if (Session["user"] != null)
             {
                 //Recuperamos los datos de Session
@@ -29,94 +31,92 @@ namespace Gestor_eCommerce_WebApp
                 return;
             }
 
-            if (!IsPostBack)
+            try
             {
-                /*
-                ddlMarca.Items.Add("Samsung");
-                ddlMarca.Items.Add("Motorola");
-                ddlMarca.Items.Add("Sony");
-                ddlMarca.Items.Add("Apple");
-                */
-
-                MarcaNegocio marcaNegocio = new MarcaNegocio();
-                ddlMarca.DataSource = marcaNegocio.listar(); // Trae la lista de objetos Marca desde la DB
-                ddlMarca.DataTextField = "Descripcion"; // Lo que ve el usuario en pantalla
-                ddlMarca.DataValueField = "Id";         // El ID real que se guarda por detrás
-                ddlMarca.DataBind();
-
-                /*
-                ddlCategoria.Items.Add("Celulares");
-                ddlCategoria.Items.Add("Media");
-                ddlCategoria.Items.Add("Audio");
-                ddlCategoria.Items.Add("Tablets");
-                ddlCategoria.Items.Add("PCs");
-                */
-
-                CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
-                ddlCategoria.DataSource = categoriaNegocio.listar();
-                ddlCategoria.DataTextField = "Descripcion";
-                ddlCategoria.DataValueField = "Id";      
-                ddlCategoria.DataBind();
-
-                btnAceptar.Enabled = true;
-                btnModificar.Enabled = false;
-                btnEliminar.Enabled = false;
-
-                if (Request.QueryString["id"] != null) //Valida si viene del Seleccionar o no
+                if (!IsPostBack)
                 {
-                    int id = int.Parse(Request.QueryString["id"]);
-                    ArticuloNegocio articuloNegocio = new ArticuloNegocio();
-                    Articulo seleccionado = articuloNegocio.listar().Find(x => x.Id == id);
+                    MarcaNegocio marcaNegocio = new MarcaNegocio();
+                    ddlMarca.DataSource = marcaNegocio.listar(); // Trae la lista de objetos Marca desde la DB
+                    ddlMarca.DataTextField = "Descripcion"; // Lo que ve el usuario en pantalla
+                    ddlMarca.DataValueField = "Id";         // El ID real que se guarda por detrás
+                    ddlMarca.DataBind();
 
-                    //List<Articulo> temporal = (List<Articulo>)Session["listaArticulos"];
-                    //Articulo seleccionado = temporal.Find(x => x.Id == id);
+                    CategoriaNegocio categoriaNegocio = new CategoriaNegocio();
+                    ddlCategoria.DataSource = categoriaNegocio.listar();
+                    ddlCategoria.DataTextField = "Descripcion";
+                    ddlCategoria.DataValueField = "Id";
+                    ddlCategoria.DataBind();
 
-                    if(seleccionado != null)
+                    btnAceptar.Enabled = true;
+                    btnModificar.Enabled = false;
+                    btnEliminar.Enabled = false;
+
+                    if (Request.QueryString["id"] != null) //Valida si viene del Seleccionar(manito indice) o no
                     {
-                        txtBoxCodigo.Text = seleccionado.Codigo;
-                        txtBoxNombre.Text = seleccionado.Nombre;
-                        txtBoxDescripcion.Text = seleccionado.Descripcion;
-                        ddlMarca.SelectedValue = seleccionado.marcaArticulo.Descripcion;
-                        ddlCategoria.SelectedValue = seleccionado.categoriaArticulo.Descripcion;
-                        txtBoxImagen.Text = seleccionado.ImagenUrl;
-                        txtBoxPrecio.Text = seleccionado.Precio.ToString();
-                        txtBoxId.Text = seleccionado.Id.ToString();
-                        txtBoxId.ReadOnly = true;
+                        int id = int.Parse(Request.QueryString["id"]);
+                        ArticuloNegocio articuloNegocio = new ArticuloNegocio();
+                        Articulo seleccionado = articuloNegocio.listar().Find(x => x.Id == id);
 
-                        btnAceptar.Enabled = false;
-                        btnModificar.Enabled = true;
-                        btnEliminar.Enabled = true;
+                        //List<Articulo> temporal = (List<Articulo>)Session["listaArticulos"];
+                        //Articulo seleccionado = temporal.Find(x => x.Id == id);
+
+                        if (seleccionado != null)
+                        {
+                            txtBoxCodigo.Text = seleccionado.Codigo;
+                            txtBoxNombre.Text = seleccionado.Nombre;
+                            txtBoxDescripcion.Text = seleccionado.Descripcion;
+                            ddlMarca.SelectedValue = seleccionado.marcaArticulo.Descripcion;
+                            ddlCategoria.SelectedValue = seleccionado.categoriaArticulo.Descripcion;
+                            txtBoxImagen.Text = seleccionado.ImagenUrl;
+                            txtBoxPrecio.Text = seleccionado.Precio.ToString();
+                            txtBoxId.Text = seleccionado.Id.ToString();
+                            txtBoxId.ReadOnly = true;
+
+                            btnAceptar.Enabled = false;
+                            btnModificar.Enabled = true;
+                            btnEliminar.Enabled = true;
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex);
+                throw;
+                //Redirección a pantalla de error.
             }
         }
 
         protected void btnAceptar_Click(object sender, EventArgs e)
         {
-            ArticuloNegocio articuloNegocio = new ArticuloNegocio();
-            Articulo articulo = new Articulo();
+            try
+            {
+                ArticuloNegocio articuloNegocio = new ArticuloNegocio();
+                Articulo articuloNuevo = new Articulo();
 
-            articulo.Id = int.Parse(txtBoxId.Text);
-            articulo.Codigo = txtBoxCodigo.Text;
-            articulo.Nombre = txtBoxNombre.Text;
-            articulo.Descripcion = txtBoxDescripcion.Text;
-            Categoria categoriaArticulo = new Categoria();
-            articulo.categoriaArticulo.Descripcion = ddlCategoria.SelectedValue;
-            Marca marcaArticulo = new Marca();
-            articulo.marcaArticulo.Descripcion = ddlMarca.SelectedValue;
-            articulo.ImagenUrl = txtBoxImagen.Text;
+                //Property Id se generará en DB.
+                articuloNuevo.Codigo = txtBoxCodigo.Text;
+                articuloNuevo.Nombre = txtBoxNombre.Text;
+                articuloNuevo.Descripcion = txtBoxDescripcion.Text;
+                articuloNuevo.categoriaArticulo = new Categoria();
+                articuloNuevo.categoriaArticulo.Id = int.Parse(ddlCategoria.SelectedValue);
+                articuloNuevo.marcaArticulo = new Marca();
+                articuloNuevo.marcaArticulo.Id = int.Parse(ddlMarca.SelectedValue);
+                articuloNuevo.ImagenUrl = txtBoxImagen.Text;
 
-            //articulo.Precio = decimal.Parse(txtBoxPrecio.Text);
-            if (decimal.TryParse(txtBoxPrecio.Text, out decimal precioConvertido))
-                articulo.Precio = precioConvertido;
+                //articulo.Precio = decimal.Parse(txtBoxPrecio.Text);
+                if (decimal.TryParse(txtBoxPrecio.Text, out decimal precioConvertido))
+                    articuloNuevo.Precio = precioConvertido;
 
-            //Acá enviaría los datos a DB llamando algún método...
-
-            /*Recuperación de la grilla actualizada cuando el guardado es en Session
-            --------------------------------------------------------------------------*/
-            articuloNegocio.agregar(articulo);
-
-            Response.Redirect("Default.aspx");
+                articuloNegocio.agregarConSP(articuloNuevo);
+                Response.Redirect("ArticulosLista.aspx", false);
+            }
+            catch (Exception ex)
+            {
+                Session.Add("error", ex);
+                throw;
+                //Redirección a pantalla de error.
+            }
         }
 
         protected void btnModificar_Click(object sender, EventArgs e)
@@ -160,6 +160,11 @@ namespace Gestor_eCommerce_WebApp
             }
 
             Response.Redirect("Default.aspx", false);
+        }
+
+        protected void txtBoxImagen_TextChanged(object sender, EventArgs e)
+        {
+            imagenArticulo.ImageUrl = txtBoxImagen.Text;
         }
     }
 }

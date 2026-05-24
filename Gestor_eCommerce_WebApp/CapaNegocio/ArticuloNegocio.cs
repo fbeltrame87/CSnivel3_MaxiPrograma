@@ -61,8 +61,6 @@ namespace CapaNegocio
 
             try
             {
-                //string consulta = "select A.Id, Codigo, Nombre, A.Descripcion, M.Descripcion Marca, C.Descripcion Categoria, ImagenUrl, Precio, A.IdMarca, A.IdCategoria from ARTICULOS A, MARCAS M, CATEGORIAS C where IdMarca = M.Id and IdCategoria = C.Id";
-                //datos.setearConsulta(consulta);
                 datos.setearProcedimiento("storedListar");
 
                 datos.ejecutarLectura();
@@ -100,15 +98,21 @@ namespace CapaNegocio
             }
         }
 
-        public void agregar(Articulo nuevo)
+        public void agregarConSP(Articulo nuevo)
         {
             AccesoDatos datos = new AccesoDatos();
 
             try
             {
-                datos.setearConsulta("insert into ARTICULOS(Codigo, Nombre, Descripcion, IdMarca, IdCategoria, ImagenUrl, Precio) values('" + nuevo.Codigo + "', '" + nuevo.Nombre + "', '" + nuevo.Descripcion + "', @idMarca, @idCategoria, '" + nuevo.ImagenUrl + "', " + nuevo.Precio + ")");
-                datos.setearParametro("@idCategoria", nuevo.categoriaArticulo.Id);
+                datos.setearProcedimiento("storedAltaArticulo");
+                datos.setearParametro("@codigo", nuevo.Codigo);
+                datos.setearParametro("@nombre", nuevo.Nombre);
+                datos.setearParametro("@descr", nuevo.Descripcion);
                 datos.setearParametro("@idMarca", nuevo.marcaArticulo.Id);
+                datos.setearParametro("@idCategoria", nuevo.categoriaArticulo.Id);
+                datos.setearParametro("@img", nuevo.ImagenUrl);
+                datos.setearParametro("@precio", nuevo.Precio);
+
                 datos.ejecutarAccion();
             }
             catch (Exception ex)
