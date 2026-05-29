@@ -138,6 +138,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CapaDatos\CapaDatos.csproj">
+      <Project>{635467fc-33f7-4453-a291-b742130037ce}</Project>
+      <Name>CapaDatos</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CapaDominio\CapaDominio.csproj">
       <Project>{d03be491-e8af-47fe-aae2-b33326b62a07}</Project>
       <Name>CapaDominio</Name>

@@ -13,10 +13,12 @@ namespace Gestor_eCommerce_WebApp
     {
         public string user { get; set; }
         public string password { get; set; }
+        public bool ConfirmaEliminacion { get; set; }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             txtBoxId.Enabled = false;
+            ConfirmaEliminacion = false;
 
             if (Session["user"] != null)
             {
@@ -33,6 +35,7 @@ namespace Gestor_eCommerce_WebApp
 
             try
             {
+                //Configuración inicial.
                 if (!IsPostBack)
                 {
                     MarcaNegocio marcaNegocio = new MarcaNegocio();
@@ -47,18 +50,18 @@ namespace Gestor_eCommerce_WebApp
                     ddlCategoria.DataValueField = "Id";
                     ddlCategoria.DataBind();
 
-                    btnAceptar.Enabled = true;
+                    btnAgregar.Enabled = true;
                     btnModificar.Enabled = false;
                     btnEliminar.Enabled = false;
 
-                    if (Request.QueryString["id"] != null) //Valida si viene del Seleccionar(manito indice) o no
+                    //Configuración si estamos modificando.
+                    string id = Request.QueryString["id"] != null ? Request.QueryString["id"].ToString() : "";
+                    if (id != "") //Valida si viene del Seleccionar(manito indice) o no
                     {
-                        int id = int.Parse(Request.QueryString["id"]);
                         ArticuloNegocio articuloNegocio = new ArticuloNegocio();
-                        Articulo seleccionado = articuloNegocio.listar().Find(x => x.Id == id);
-
-                        //List<Articulo> temporal = (List<Articulo>)Session["listaArticulos"];
-                        //Articulo seleccionado = temporal.Find(x => x.Id == id);
+                        //List<Articulo> lista = articuloNegocio.listar(id);
+                        //Articulo seleccionado = lista[0];
+                        Articulo seleccionado = (articuloNegocio.listar(id))[0]; //Versión resumida
 
                         if (seleccionado != null)
                         {
@@ -70,9 +73,9 @@ namespace Gestor_eCommerce_WebApp
                             txtBoxImagen.Text = seleccionado.ImagenUrl;
                             txtBoxPrecio.Text = seleccionado.Precio.ToString();
                             txtBoxId.Text = seleccionado.Id.ToString();
-                            txtBoxId.ReadOnly = true;
+                            txtBoxImagen_TextChanged(sender, e); //Forzamos para recargar la imagen.
 
-                            btnAceptar.Enabled = false;
+                            btnAgregar.Enabled = false;
                             btnModificar.Enabled = true;
                             btnEliminar.Enabled = true;
                         }
@@ -87,7 +90,7 @@ namespace Gestor_eCommerce_WebApp
             }
         }
 
-        protected void btnAceptar_Click(object sender, EventArgs e)
+        protected void btnAgregar_Click(object sender, EventArgs e)
         {
             try
             {
@@ -103,6 +106,8 @@ namespace Gestor_eCommerce_WebApp
                 articuloNuevo.marcaArticulo = new Marca();
                 articuloNuevo.marcaArticulo.Id = int.Parse(ddlMarca.SelectedValue);
                 articuloNuevo.ImagenUrl = txtBoxImagen.Text;
+                if (imagenArticulo == null)
+                    articuloNuevo.ImagenUrl = "https://www.neuco.com/assets/img/product-placeholder.webp";
 
                 //articulo.Precio = decimal.Parse(txtBoxPrecio.Text);
                 if (decimal.TryParse(txtBoxPrecio.Text, out decimal precioConvertido))
@@ -136,12 +141,15 @@ namespace Gestor_eCommerce_WebApp
                     seleccionado.marcaArticulo.Descripcion = ddlMarca.SelectedValue;
                     Categoria categoriaArticulo = new Categoria();
                     seleccionado.categoriaArticulo.Descripcion = ddlCategoria.SelectedValue;
+ 
                     seleccionado.ImagenUrl = txtBoxImagen.Text;
+                    if (imagenArticulo == null)
+                        seleccionado.ImagenUrl = "https://www.neuco.com/assets/img/product-placeholder.webp";
 
                     if (decimal.TryParse(txtBoxPrecio.Text, out decimal precioConvertido))
                         seleccionado.Precio = precioConvertido;
 
-                    articuloNegocio.modificar(seleccionado);
+                    articuloNegocio.modificarConSP(seleccionado);
                 }
             }
 
@@ -150,16 +158,26 @@ namespace Gestor_eCommerce_WebApp
 
         protected void btnEliminar_Click(object sender, EventArgs e)
         {
-            if (int.TryParse(txtBoxId.Text, out int idBuscado))
+            ConfirmaEliminacion = true;
+        }
+
+        protected void btnConfirmar_Click(object sender, EventArgs e)
+        {
+            try
             {
-                ArticuloNegocio articuloNegocio = new ArticuloNegocio();
-                Articulo seleccionado = articuloNegocio.listar().Find(x => x.Id == idBuscado);
-
-                if (seleccionado != null)
-                    articuloNegocio.eliminar(idBuscado);
+                if (chkBoxConfirmaEliminar.Checked)
+                {
+                    ArticuloNegocio negocio = new ArticuloNegocio();
+                    negocio.eliminar(int.Parse(txtBoxId.Text));
+                    Response.Redirect("ArticulosLista.aspx", false);
+                }
+                
+                
             }
-
-            Response.Redirect("Default.aspx", false);
+            catch (Exception ex)
+            {
+                Session.Add("error", ex);
+            }
         }
 
         protected void txtBoxImagen_TextChanged(object sender, EventArgs e)
